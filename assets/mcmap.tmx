@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.8" tiledversion="1.8.5" orientation="orthogonal" renderorder="right-down" width="30" height="18" tilewidth="16" tileheight="16" infinite="0" nextlayerid="3" nextobjectid="17">
+ <tileset firstgid="1" source="map/mctiles.tsx"/>
+ <layer id="1" name="Tile Layer 1" width="30" height="18">
+  <data encoding="base64" compression="zlib">
+   eJzFlN0KgCAMRrWILsyf3v9lI5gwxtSNaV0cSGydbyvLzrn8AwF4rw8EvWeVV8JMp1e6e3m4fKNaj7Dm4LKMiJO8GiJixQz+6PXrOe5AneOlqD0NBHBRpO6bWSegtR8Y7wbM8KZODq5Xbb+cp5er5ZR6Le+3elpnEp9b6Zw1awrO0ftf4OeUCV7a86jfYui3oHrL96xZF+J9ADAnGEE=
+  </data>
+ </layer>
+ <objectgroup id="2" name="objects">
+  <object id="1" x="0" y="240">
+   <polygon points="0,0 48,0 48,16 0,16"/>
+  </object>
+  <object id="2" x="80" y="240">
+   <polygon points="0,0 48,0 48,16 0,16 0,0"/>
+  </object>
+  <object id="3" x="144" y="208">
+   <polygon points="0,0 240,0 240,16 0,16 0,0"/>
+  </object>
+  <object id="4" x="144" y="144">
+   <polygon points="0,0 240,0 240,16 0,16"/>
+  </object>
+  <object id="5" x="416" y="208">
+   <polygon points="0,0 48,0 48,16 0,16"/>
+  </object>
+  <object id="6" x="448" y="160">
+   <polygon points="0,0 32,0 32,16 0,16"/>
+  </object>
+  <object id="7" x="384" y="128">
+   <polygon points="0,0 32,0 32,16 0,16"/>
+  </object>
+  <object id="8" x="112" y="96">
+   <polygon points="0,0 48,0 48,16 0,16"/>
+  </object>
+  <object id="9" x="32" y="64">
+   <polygon points="0,0 48,0 48,16 0,16 0,0"/>
+  </object>
+  <object id="10" x="0" y="48">
+   <polygon points="0,0 16,0 16,16 0,16"/>
+  </object>
+  <object id="11" x="48" y="16">
+   <polygon points="0,0 48,0 48,16 0,16"/>
+  </object>
+  <object id="16" name="player" x="16" y="200" width="32" height="32"/>
+ </objectgroup>
+</map>
