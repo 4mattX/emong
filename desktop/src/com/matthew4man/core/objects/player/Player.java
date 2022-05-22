@@ -5,14 +5,16 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.*;
+import com.matthew4man.core.controllers.PlayerController;
 
 import java.util.HashMap;
 
 import static com.matthew4man.core.helper.Constants.PPM;
 
-public class Player extends GameEntity{
+public class Player extends GameEntity {
 
     private long deltaTimeJump;
     private long deltaTimeLeft;
@@ -20,12 +22,16 @@ public class Player extends GameEntity{
     private boolean jumpReady;
     private boolean facingLeft;
     private boolean isWalking;
-    private int walkIteration;
-
+    public Fixture playerWallSensorFixture;
+    private Fixture playerFloorFixture;
+    private Fixture playerCeilingFixture;
     private Texture texture;
-    private Sprite sprite;
     private HashMap<String, Texture> textureMap = new HashMap<>();
-    private String textureId;
+    private PlayerController playerController;
+
+    public int walkIteration;
+    public Sprite sprite;
+    public String textureId;
 
     public Player(float width, float height, Body body) {
         super(width, height, body);
@@ -33,12 +39,20 @@ public class Player extends GameEntity{
         this.textureId = "idle";
         this.texture = textureMap.get(textureId);
         this.sprite = new Sprite(this.texture);
+        this.playerController = new PlayerController(this);
 
         this.speed = 2.85f;
         this.deltaTimeJump = 0;
         this.jumpReady = false;
         this.facingLeft = false;
         this.walkIteration = 0;
+
+        setPlayerSideColliders();
+        for(int i=0; i< body.getFixtureList().size; i++){
+//            this.getBody().getFixtureList().get(i).setSensor(true);
+            System.out.println(this.getBody().getFixtureList().get(i).getUserData());
+        }
+
     }
 
     @Override
@@ -59,139 +73,80 @@ public class Player extends GameEntity{
     }
 
     private void checkUserInput() {
-        if (onGround()) {
-            velX = 0;
-        }
 
-        if (isWalking) {
-            if (walkIteration > 10) {
-                walkIteration = 0;
-            } else {
-                walkIteration++;
-            }
-
-            this.textureId = "walk" + walkIteration / 5;
-        } else if (isFalling()) {
-            this.textureId = "fall0";
-        } else if (isJumping()) {
-            this.textureId = "jump1";
-        }
-
-        else {
-            this.textureId = "idle";
-        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-
-            isWalking = true;
-
-            // Flip textures
-            if (facingLeft) {
-                facingLeft = false;
-                this.sprite.flip(true, false);
-            }
-
-            if (!jumpReady) {
-                velX = 1;
-            } else {
-                deltaTimeRight = System.currentTimeMillis();
-            }
-
-        }
-
-        else if (Gdx.input.isKeyPressed(Input.Keys.A )) {
-
-            isWalking = true;
-
-            // Flip textures
-            if (!facingLeft) {
-                facingLeft = true;
-                this.sprite.flip(true, false);
-            }
-
-            if (!jumpReady) {
-                velX = -1;
-            } else {
-                deltaTimeLeft = System.currentTimeMillis();
-            }
-        } else {
-            isWalking = false;
-        }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-            if (!isWalking) {
-                deltaTimeJump = System.currentTimeMillis();
-                jumpReady = true;
-            }
-        }
-
-//        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-//            float force = body.getMass() * 18;
-//            body.setLinearVelocity(body.getLinearVelocity().x, 0);
-//            body.applyLinearImpulse(new Vector2(0, force), body.getPosition(), true);
-//        }
-
-        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-            if (!isWalking) {
-                velX = 0;
-                this.textureId = "jump0";
-            }
-
-        } else {
-
-            if (jumpReady) {
-                float timeDifJump = Math.abs(System.currentTimeMillis() - deltaTimeJump) / 80;
-
-                long timeDifRight = Math.abs(System.currentTimeMillis() - deltaTimeRight) / 80;
-                long timeDifLeft = Math.abs(System.currentTimeMillis() - deltaTimeLeft) / 80;
-
-                float forceX = (timeDifLeft - timeDifRight);
-                float forceY = body.getMass() * timeDifJump + 7;
-
-                body.applyLinearImpulse(new Vector2(0, forceY), body.getPosition(), true);
-
-                if (forceX > 0) {
-                    velX = 3;
-                } else if (forceX == 0) {
-                   velX = 0;
-                } else {
-                    velX = -3;
-                }
-
-
-                deltaTimeLeft = System.currentTimeMillis();
-                deltaTimeRight = System.currentTimeMillis();
-
-                jumpReady = false;
-
-            }
-
-//            this.textureId = "idle";
-            body.setLinearVelocity(velX * speed, body.getLinearVelocity().y < 20 ? body.getLinearVelocity().y : 20);
-        }
-
+        this.playerController.getUserInput();
+        this.playerController.performPlayerAction();
+        this.playerController.checkWallCollisions();
+        this.playerController.performSpriteChange();
+        this.playerController.clearInputList();
 
     }
 
-    private boolean onGround() {
+    private void setPlayerSideColliders() {
+
+        float sensorRadius = 0.6f;
+        PolygonShape wallSensorShape = new PolygonShape();
+        Vector2[] vertices = new Vector2[8];
+        vertices[0] = new Vector2(0, 0);
+        for(int i = 0; i < 7; i++)
+        {
+//            float angle = (i / 6.0f * 90f - 225f) * MathUtils.degreesToRadians;
+            float angle = (i / 1.0f * 90f - 225f) * MathUtils.degreesToRadians;
+            vertices[i + 1] = new Vector2(sensorRadius * MathUtils.cos(angle), sensorRadius * 1.2f * MathUtils.sin(angle));
+        }
+        wallSensorShape.set(vertices);
+        playerWallSensorFixture = body.createFixture(wallSensorShape, 0);
+        playerWallSensorFixture.setSensor(false);
+
+//        wallSensorShape = new PolygonShape();
+//        vertices = new Vector2[8];
+//        vertices[0] = new Vector2(0, 0);
+//        for(int i = 0; i < 7; i++)
+//        {
+//            float angle = (i / 1.0f * 90f - 225f) * MathUtils.degreesToRadians;
+//            vertices[i + 1] = new Vector2((sensorRadius - 0.04f) * MathUtils.cos(angle), sensorRadius * 0.5f * MathUtils.sin(angle) - 0.29f);
+//        }
+//        wallSensorShape.set(vertices);
+//        playerFloorFixture = body.createFixture(wallSensorShape, 0);
+//        playerFloorFixture.setSensor(false);
+//
+//        wallSensorShape = new PolygonShape();
+//        vertices = new Vector2[8];
+//        vertices[0] = new Vector2(0, 0);
+//        for(int i = 0; i < 7; i++)
+//        {
+//            float angle = (i / 1.0f * 90f - 225f) * MathUtils.degreesToRadians;
+//            vertices[i + 1] = new Vector2((sensorRadius - 0.04f) * MathUtils.cos(angle), sensorRadius * 0.5f * MathUtils.sin(angle) + 0.29f);
+//        }
+//        wallSensorShape.set(vertices);
+//        playerCeilingFixture = body.createFixture(wallSensorShape, 0);
+//        playerCeilingFixture.setSensor(false);
+
+    }
+
+    public boolean onGround() {
         if (body.getLinearVelocity().y == 0.0f) {
             return true;
         }
         return false;
     }
 
-    private boolean isFalling() {
+    public boolean isFalling() {
         if (body.getLinearVelocity().y < 0.0f) {
             return true;
         }
         return false;
     }
 
-    private boolean isJumping() {
+    public boolean isJumping() {
         if (body.getLinearVelocity().y > 0.0f) {
             return true;
         }
         return false;
+    }
+
+    public PlayerController getPlayerController() {
+        return this.playerController;
     }
 
     private void loadTextures() {

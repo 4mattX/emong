@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.matthew4man.core.helper.PlayerContactListener;
 import com.matthew4man.core.helper.TileMapHelper;
 import com.matthew4man.core.objects.player.Player;
 import org.lwjgl.opengl.GL20;
@@ -25,13 +26,13 @@ public class GameScreen extends ScreenAdapter {
 
     private OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
     private TileMapHelper tileMapHelper;
+    private PlayerContactListener playerContactListener;
 
     private Player player;
 
     public GameScreen(OrthographicCamera camera) {
         this.camera = camera;
-//        this.camera.zoom -= 0.75f;
-//        this.camera.zoom -= 0.75f;
+        this.camera.zoom -= 0.73f;
 
         this.batch = new SpriteBatch();
         this.world = new World(new Vector2(0, -50f), false);
@@ -39,6 +40,9 @@ public class GameScreen extends ScreenAdapter {
 
         this.tileMapHelper = new TileMapHelper(this);
         this.orthogonalTiledMapRenderer = tileMapHelper.setupMap();
+        playerContactListener = new PlayerContactListener();
+        world.setContactListener(playerContactListener);
+        playerContactListener.setPlayer(player);
     }
 
     private void update() {
