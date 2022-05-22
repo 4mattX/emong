@@ -134,6 +134,7 @@ public class PlayerController {
     }
 
     public void performSpriteChange() {
+
         if (isWalking) {
             if (this.player.walkIteration > 10) {
                 this.player.walkIteration = 0;
