@@ -17,6 +17,7 @@ public class PlayerController {
     private boolean isWalking;
     private boolean isFacingLeft;
     public boolean bounce;
+    public boolean isBouncing;
 
     private float X_VELOCITY;
     private long deltaTimeJump;
@@ -34,24 +35,25 @@ public class PlayerController {
 
     public void getUserInput() {
 
-        if (this.player.onGround()) {
+        if (!this.player.onGround()) {
+            return;
+        }
 
-            if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-                inputList.add("left");
-            }
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            inputList.add("left");
+        }
 
-            if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-                inputList.add("right");
-            }
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            inputList.add("right");
+        }
 
-            if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
-                inputList.add("jump");
-            }
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+            inputList.add("jump");
+        }
 
-            if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-                isJumpReady = true;
-                deltaTimeJump = System.currentTimeMillis();
-            }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            isJumpReady = true;
+            deltaTimeJump = System.currentTimeMillis();
         }
 
     }
@@ -171,6 +173,7 @@ public class PlayerController {
 
         if (bounce) {
             bounce = false;
+            isBouncing = true;
             this.player.velX *= -1;
         }
 

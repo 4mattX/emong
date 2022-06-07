@@ -41,7 +41,7 @@ public class Player extends GameEntity {
         this.sprite = new Sprite(this.texture);
         this.playerController = new PlayerController(this);
 
-        this.speed = 2.85f;
+        this.speed = 2.0f;
         this.deltaTimeJump = 0;
         this.jumpReady = false;
         this.facingLeft = false;
@@ -61,6 +61,10 @@ public class Player extends GameEntity {
         y = body.getPosition().y * PPM;
 
         checkUserInput();
+
+        body.getFixtureList().forEach(fixture -> {
+            fixture.setSensor(false);
+        });
     }
 
     @Override
@@ -92,7 +96,7 @@ public class Player extends GameEntity {
         {
 //            float angle = (i / 6.0f * 90f - 225f) * MathUtils.degreesToRadians;
             float angle = (i / 1.0f * 90f - 225f) * MathUtils.degreesToRadians;
-            vertices[i + 1] = new Vector2(sensorRadius * MathUtils.cos(angle), sensorRadius * 1.2f * MathUtils.sin(angle));
+            vertices[i + 1] = new Vector2(sensorRadius * MathUtils.cos(angle) * 0.8f, sensorRadius * 1.0f * MathUtils.sin(angle));
         }
         wallSensorShape.set(vertices);
         playerWallSensorFixture = body.createFixture(wallSensorShape, 0);
@@ -126,6 +130,7 @@ public class Player extends GameEntity {
 
     public boolean onGround() {
         if (body.getLinearVelocity().y == 0.0f) {
+            playerController.isBouncing = false;
             return true;
         }
         return false;
@@ -159,6 +164,11 @@ public class Player extends GameEntity {
         textureMap.put("walk0", new Texture("playerTextures/walk0.png"));
         textureMap.put("walk1", new Texture("playerTextures/walk1.png"));
         textureMap.put("walk2", new Texture("playerTextures/walk2.png"));
+//        textureMap.put("walk3", new Texture("playerTextures/walk3.png"));
+//        textureMap.put("walk4", new Texture("playerTextures/walk4.png"));
+//        textureMap.put("walk5", new Texture("playerTextures/walk5.png"));
+//        textureMap.put("walk6", new Texture("playerTextures/walk6.png"));
+//        textureMap.put("walk7", new Texture("playerTextures/walk7.png"));
     }
 
 }
