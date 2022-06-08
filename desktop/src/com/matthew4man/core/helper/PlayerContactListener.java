@@ -16,6 +16,11 @@ public class PlayerContactListener implements ContactListener {
         if (fixtureA.getUserData() == "wall" || fixtureB.getUserData() == "wall") {
             this.player.getPlayerController().bounce = true;
         }
+
+        if (fixtureA.getUserData() == "ceiling" || fixtureB.getUserData() == "ceiling") {
+            this.player.getPlayerController().bounce = true;
+            this.player.getPlayerController().ceiling = true;
+        }
     }
 
     @Override

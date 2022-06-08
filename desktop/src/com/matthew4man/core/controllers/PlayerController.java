@@ -17,6 +17,8 @@ public class PlayerController {
     private boolean isWalking;
     private boolean isFacingLeft;
     public boolean bounce;
+    public boolean ceiling;
+    public boolean againstWall;
     public boolean isBouncing;
 
     private float X_VELOCITY;
@@ -28,6 +30,8 @@ public class PlayerController {
         this.isJumpReady = false;
         this.isWalking = false;
         this.isFacingLeft = false;
+        this.againstWall = false;
+        this.ceiling = false;
 
         this.X_VELOCITY = 2.5f;
         this.deltaTimeJump = 0;
@@ -36,8 +40,11 @@ public class PlayerController {
     public void getUserInput() {
 
         if (!this.player.onGround()) {
+            this.player.getBody().getFixtureList().get(2).setSensor(false);
             return;
         }
+
+        this.player.getBody().getFixtureList().get(3).setSensor(false);
 
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
             inputList.add("left");
@@ -81,23 +88,34 @@ public class PlayerController {
             }
         }
 
+        // Release Jump Logic
+        if (isJumpReady && inputList.contains("jump")) {
+            float timeDifJump = Math.abs(System.currentTimeMillis() - deltaTimeJump) / 80;
+
+            if (timeDifJump > 10) {
+                inputList.remove("jump");
+            }
+        }
+
         // Jump Logic
         if (isJumpReady && !inputList.contains("jump")) {
             isJumpReady = false;
 
             float timeDifJump = Math.abs(System.currentTimeMillis() - deltaTimeJump) / 80;
 
-            float forceY = this.player.getBody().getMass() * timeDifJump + 1;
+            float forceY = (this.player.getBody().getMass() * timeDifJump) + 2;
 
             if (inputList.contains("left") || inputList.contains("right")) {
                 this.player.velX = (inputList.contains("right") ? X_VELOCITY : -X_VELOCITY);
             }
 
-            this.player.getBody().applyLinearImpulse(new Vector2(0, forceY), this.player.getBody().getPosition(), true);
-            this.player.getBody().setLinearVelocity(this.player.velX * this.player.speed,
-                    this.player.getBody().getLinearVelocity().y < 20 ? this.player.getBody().getLinearVelocity().y : 20);
 
+            this.player.getBody().getFixtureList().get(3).setSensor(true);
+
+            this.player.getBody().applyLinearImpulse(new Vector2(0, forceY * 1.7f), this.player.getBody().getPosition(), true);
         }
+
+
 
         // Walking logic
         if (inputList.contains("right")) {
@@ -127,12 +145,13 @@ public class PlayerController {
             }
         }
 
+
+
         if (!inputList.contains("left") && !inputList.contains("right")) {
             isWalking = false;
         }
 
-        this.player.getBody().setLinearVelocity(this.player.velX * this.player.speed, this.player.getBody().getLinearVelocity().y < 20 ? this.player.getBody().getLinearVelocity().y : 20);
-
+        this.player.getBody().setLinearVelocity(this.player.velX * this.player.speed, this.player.getBody().getLinearVelocity().y);
     }
 
     public void performSpriteChange() {
@@ -172,13 +191,18 @@ public class PlayerController {
         }
 
         if (bounce) {
+
+            if (ceiling) {
+                ceiling = false;
+                bounce = false;
+                isBouncing = true;
+                return;
+            }
+
             bounce = false;
             isBouncing = true;
-            this.player.velX *= -1;
+            this.player.velX *= -1.1;
         }
-
-
-
 
     }
 

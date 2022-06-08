@@ -23,6 +23,7 @@ public class Player extends GameEntity {
     private boolean facingLeft;
     private boolean isWalking;
     public Fixture playerWallSensorFixture;
+    public Fixture checkWallFixture;
     private Fixture playerFloorFixture;
     private Fixture playerCeilingFixture;
     private Texture texture;
@@ -62,9 +63,12 @@ public class Player extends GameEntity {
 
         checkUserInput();
 
-        body.getFixtureList().forEach(fixture -> {
-            fixture.setSensor(false);
-        });
+//        body.getFixtureList().forEach(fixture -> {
+//            fixture.setSensor(false);
+//        });
+
+        body.getFixtureList().get(0).setSensor(false);
+
     }
 
     @Override
@@ -94,7 +98,6 @@ public class Player extends GameEntity {
         vertices[0] = new Vector2(0, 0);
         for(int i = 0; i < 7; i++)
         {
-//            float angle = (i / 6.0f * 90f - 225f) * MathUtils.degreesToRadians;
             float angle = (i / 1.0f * 90f - 225f) * MathUtils.degreesToRadians;
             vertices[i + 1] = new Vector2(sensorRadius * MathUtils.cos(angle) * 0.8f, sensorRadius * 1.0f * MathUtils.sin(angle));
         }
@@ -102,29 +105,25 @@ public class Player extends GameEntity {
         playerWallSensorFixture = body.createFixture(wallSensorShape, 0);
         playerWallSensorFixture.setSensor(false);
 
-//        wallSensorShape = new PolygonShape();
-//        vertices = new Vector2[8];
-//        vertices[0] = new Vector2(0, 0);
-//        for(int i = 0; i < 7; i++)
-//        {
-//            float angle = (i / 1.0f * 90f - 225f) * MathUtils.degreesToRadians;
-//            vertices[i + 1] = new Vector2((sensorRadius - 0.04f) * MathUtils.cos(angle), sensorRadius * 0.5f * MathUtils.sin(angle) - 0.29f);
-//        }
-//        wallSensorShape.set(vertices);
-//        playerFloorFixture = body.createFixture(wallSensorShape, 0);
-//        playerFloorFixture.setSensor(false);
-//
-//        wallSensorShape = new PolygonShape();
-//        vertices = new Vector2[8];
-//        vertices[0] = new Vector2(0, 0);
-//        for(int i = 0; i < 7; i++)
-//        {
-//            float angle = (i / 1.0f * 90f - 225f) * MathUtils.degreesToRadians;
-//            vertices[i + 1] = new Vector2((sensorRadius - 0.04f) * MathUtils.cos(angle), sensorRadius * 0.5f * MathUtils.sin(angle) + 0.29f);
-//        }
-//        wallSensorShape.set(vertices);
-//        playerCeilingFixture = body.createFixture(wallSensorShape, 0);
-//        playerCeilingFixture.setSensor(false);
+        for(int i = 0; i < 7; i++)
+        {
+            float angle = (i / 1.0f * 90f - 225f) * MathUtils.degreesToRadians;
+            vertices[i + 1] = new Vector2(sensorRadius * MathUtils.cos(angle) * 0.8f, sensorRadius * 1.0f * MathUtils.sin(angle) + 0.1f);
+        }
+        wallSensorShape.set(vertices);
+        checkWallFixture = body.createFixture(wallSensorShape, 0);
+        checkWallFixture.setSensor(false);
+        checkWallFixture.setUserData("ceiling");
+
+        for(int i = 0; i < 7; i++)
+        {
+            float angle = (i / 1.0f * 90f - 225f) * MathUtils.degreesToRadians;
+            vertices[i + 1] = new Vector2(sensorRadius * MathUtils.cos(angle) * 1.2f, sensorRadius * 1.0f * MathUtils.sin(angle));
+        }
+        wallSensorShape.set(vertices);
+        checkWallFixture = body.createFixture(wallSensorShape, 0);
+        checkWallFixture.setSensor(false);
+        checkWallFixture.setUserData("checkwall");
 
     }
 

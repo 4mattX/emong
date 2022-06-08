@@ -85,7 +85,7 @@ public class GameScreen extends ScreenAdapter {
         player.render(batch);
         batch.end();
 
-        box2DDebugRenderer.render(world, camera.combined.scl(PPM));
+//        box2DDebugRenderer.render(world, camera.combined.scl(PPM));
     }
 
     public World getWorld() {
