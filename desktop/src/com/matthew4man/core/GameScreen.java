@@ -32,7 +32,7 @@ public class GameScreen extends ScreenAdapter {
 
     public GameScreen(OrthographicCamera camera) {
         this.camera = camera;
-        this.camera.zoom -= 0.73f;
+        this.camera.zoom -= 0.5f;
 
         this.batch = new SpriteBatch();
         this.world = new World(new Vector2(0, -50f), false);
@@ -66,8 +66,8 @@ public class GameScreen extends ScreenAdapter {
         Vector3 position = camera.position;
 //        position.x = Math.round(player.getBody().getPosition().x * PPM * 10) / 10f;
 //        position.y = Math.round(player.getBody().getPosition().y * PPM * 10) / 10f;
-        position.x = 240;
-        position.y = 140;
+        position.x = 480;
+        position.y = 270;
         camera.position.set(position);
         camera.update();
     }

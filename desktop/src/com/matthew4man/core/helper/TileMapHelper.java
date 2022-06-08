@@ -29,7 +29,7 @@ public class TileMapHelper {
     }
 
     public OrthogonalTiledMapRenderer setupMap() {
-        tiledMap = new TmxMapLoader().load("mcmap1.tmx");
+        tiledMap = new TmxMapLoader().load("map/stone_world.tmx");
 
         for (int i = 0; i < tiledMap.getLayers().size(); i++) {
             System.out.println(tiledMap.getLayers().get(i).getName());

@@ -63,10 +63,6 @@ public class Player extends GameEntity {
 
         checkUserInput();
 
-//        body.getFixtureList().forEach(fixture -> {
-//            fixture.setSensor(false);
-//        });
-
         body.getFixtureList().get(0).setSensor(false);
 
     }
@@ -75,7 +71,6 @@ public class Player extends GameEntity {
     public void render(SpriteBatch batch) {
         this.texture = textureMap.get(textureId);
         this.sprite.setTexture(this.texture);
-//        batch.draw(texture, body.getPosition().x * PPM - (texture.getWidth() / 2), body.getPosition().y * PPM - (texture.getHeight() / 2), 0, 0, 32, 32, 32, 32, false, false);
 
         batch.draw(sprite, body.getPosition().x * PPM - (texture.getWidth() / 2), body.getPosition().y * PPM - (texture.getHeight() / 2));
     }
@@ -153,6 +148,10 @@ public class Player extends GameEntity {
         return this.playerController;
     }
 
+    public void setPlayerController(PlayerController playerController) {
+        this.playerController = playerController;
+    }
+
     private void loadTextures() {
         textureMap.put("bounce0", new Texture("playerTextures/bounce0.png"));
         textureMap.put("fall0", new Texture("playerTextures/fall0.png"));
@@ -169,5 +168,7 @@ public class Player extends GameEntity {
 //        textureMap.put("walk6", new Texture("playerTextures/walk6.png"));
 //        textureMap.put("walk7", new Texture("playerTextures/walk7.png"));
     }
+
+
 
 }

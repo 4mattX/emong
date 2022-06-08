@@ -112,7 +112,7 @@ public class PlayerController {
 
             this.player.getBody().getFixtureList().get(3).setSensor(true);
 
-            this.player.getBody().applyLinearImpulse(new Vector2(0, forceY * 1.7f), this.player.getBody().getPosition(), true);
+            this.player.getBody().applyLinearImpulse(new Vector2(0, forceY * 1.9f), this.player.getBody().getPosition(), true);
         }
 
 
