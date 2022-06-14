@@ -49,11 +49,6 @@ public class Player extends GameEntity {
         this.walkIteration = 0;
 
         setPlayerSideColliders();
-        for(int i=0; i< body.getFixtureList().size; i++){
-//            this.getBody().getFixtureList().get(i).setSensor(true);
-            System.out.println(this.getBody().getFixtureList().get(i).getUserData());
-        }
-
     }
 
     @Override

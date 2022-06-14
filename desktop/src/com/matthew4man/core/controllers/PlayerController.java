@@ -112,7 +112,7 @@ public class PlayerController {
 
             this.player.getBody().getFixtureList().get(3).setSensor(true);
 
-            this.player.getBody().applyLinearImpulse(new Vector2(0, forceY * 1.9f), this.player.getBody().getPosition(), true);
+            this.player.getBody().applyLinearImpulse(new Vector2(0, forceY * 1.8f), this.player.getBody().getPosition(), true);
         }
 
 
@@ -149,6 +149,12 @@ public class PlayerController {
 
         if (!inputList.contains("left") && !inputList.contains("right")) {
             isWalking = false;
+        }
+
+
+        if (this.player.isJumping()) {
+            this.player.getBody().setLinearVelocity(this.player.velX * this.player.speed * 1.6f, this.player.getBody().getLinearVelocity().y);
+            return;
         }
 
         this.player.getBody().setLinearVelocity(this.player.velX * this.player.speed, this.player.getBody().getLinearVelocity().y);

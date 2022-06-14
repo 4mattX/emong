@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
+import com.matthew4man.core.controllers.WorldController;
 import com.matthew4man.core.helper.PlayerContactListener;
 import com.matthew4man.core.helper.TileMapHelper;
 import com.matthew4man.core.objects.player.Player;
@@ -22,6 +23,7 @@ public class GameScreen extends ScreenAdapter {
     private OrthographicCamera camera;
     private SpriteBatch batch;
     private World world;
+    private WorldController worldController;
     private Box2DDebugRenderer box2DDebugRenderer;
 
     private OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
@@ -36,6 +38,7 @@ public class GameScreen extends ScreenAdapter {
 
         this.batch = new SpriteBatch();
         this.world = new World(new Vector2(0, -50f), false);
+        this.worldController = new WorldController(this.world);
         this.box2DDebugRenderer = new Box2DDebugRenderer();
 
         this.tileMapHelper = new TileMapHelper(this);
@@ -60,6 +63,9 @@ public class GameScreen extends ScreenAdapter {
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
             Gdx.app.exit();
         }
+
+        this.worldController.checkInput();
+        this.worldController.performAction();
     }
 
     private void cameraUpdate() {
