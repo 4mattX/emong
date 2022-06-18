@@ -11,7 +11,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.matthew4man.core.controllers.WorldController;
-import com.matthew4man.core.helper.PlayerContactListener;
+import com.matthew4man.core.helper.EntityContactListener;
 import com.matthew4man.core.helper.TileMapHelper;
 import com.matthew4man.core.objects.player.Player;
 import org.lwjgl.opengl.GL20;
@@ -28,32 +28,32 @@ public class GameScreen extends ScreenAdapter {
 
     private OrthogonalTiledMapRenderer orthogonalTiledMapRenderer;
     private TileMapHelper tileMapHelper;
-    private PlayerContactListener playerContactListener;
+    private EntityContactListener entityContactListener;
 
     private Player player;
 
     public GameScreen(OrthographicCamera camera) {
-        this.camera = camera;
-        this.camera.zoom -= 0.5f;
+        this.setCamera(camera);
+//        this.getCamera().zoom -= 0.5f;
 
         this.batch = new SpriteBatch();
         this.world = new World(new Vector2(0, -50f), false);
-        this.worldController = new WorldController(this.world);
+        this.worldController = new WorldController(this);
         this.box2DDebugRenderer = new Box2DDebugRenderer();
 
         this.tileMapHelper = new TileMapHelper(this);
-        this.orthogonalTiledMapRenderer = tileMapHelper.setupMap();
-        playerContactListener = new PlayerContactListener();
-        world.setContactListener(playerContactListener);
-        playerContactListener.setPlayer(player);
+        this.setOrthogonalTiledMapRenderer(tileMapHelper.setupMap());
+        entityContactListener = new EntityContactListener();
+        world.setContactListener(entityContactListener);
+        entityContactListener.setPlayer(player);
     }
 
     private void update() {
         world.step(1 / 60f, 6, 2);
         cameraUpdate();
 
-        batch.setProjectionMatrix(camera.combined);
-        orthogonalTiledMapRenderer.setView(camera);
+        batch.setProjectionMatrix(getCamera().combined);
+        getOrthogonalTiledMapRenderer().setView(getCamera());
         player.update();
 
         if (player.getBody().getPosition().y < 0) {
@@ -66,16 +66,19 @@ public class GameScreen extends ScreenAdapter {
 
         this.worldController.checkInput();
         this.worldController.performAction();
+        this.worldController.checkEntityCollision();
     }
 
     private void cameraUpdate() {
-        Vector3 position = camera.position;
+        Vector3 position = getCamera().position;
 //        position.x = Math.round(player.getBody().getPosition().x * PPM * 10) / 10f;
 //        position.y = Math.round(player.getBody().getPosition().y * PPM * 10) / 10f;
-        position.x = 480;
-        position.y = 270;
-        camera.position.set(position);
-        camera.update();
+//        position.x = 480;
+//        position.y = 270;
+        position.x = 960;
+        position.y = 0;
+        getCamera().position.set(position);
+        getCamera().update();
     }
 
     @Override
@@ -85,13 +88,13 @@ public class GameScreen extends ScreenAdapter {
         Gdx.gl.glClearColor(0.07f,0,0.2f,1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        orthogonalTiledMapRenderer.render();
+        getOrthogonalTiledMapRenderer().render();
 
         batch.begin();
         player.render(batch);
         batch.end();
 
-//        box2DDebugRenderer.render(world, camera.combined.scl(PPM));
+        box2DDebugRenderer.render(world, getCamera().combined.scl(PPM));
     }
 
     public World getWorld() {
@@ -100,6 +103,26 @@ public class GameScreen extends ScreenAdapter {
 
     public void setPlayer(Player player) {
         this.player = player;
+        this.worldController.setPlayer(player);
     }
 
+    public OrthogonalTiledMapRenderer getOrthogonalTiledMapRenderer() {
+        return orthogonalTiledMapRenderer;
+    }
+
+    public void setOrthogonalTiledMapRenderer(OrthogonalTiledMapRenderer orthogonalTiledMapRenderer) {
+        this.orthogonalTiledMapRenderer = orthogonalTiledMapRenderer;
+    }
+
+    public OrthographicCamera getCamera() {
+        return camera;
+    }
+
+    public void setCamera(OrthographicCamera camera) {
+        this.camera = camera;
+    }
+
+    public EntityContactListener getContactListener() {
+        return this.entityContactListener;
+    }
 }

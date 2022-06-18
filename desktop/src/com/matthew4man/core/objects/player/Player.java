@@ -94,6 +94,7 @@ public class Player extends GameEntity {
         wallSensorShape.set(vertices);
         playerWallSensorFixture = body.createFixture(wallSensorShape, 0);
         playerWallSensorFixture.setSensor(false);
+        playerWallSensorFixture.setUserData("player-wall-sensor");
 
         for(int i = 0; i < 7; i++)
         {

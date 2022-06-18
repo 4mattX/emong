@@ -59,6 +59,8 @@ public class TileMapHelper {
                             false,
                             gameScreen.getWorld()
                     );
+
+                    body.getFixtureList().get(0).setUserData("player");
                     gameScreen.setPlayer(new Player(rectangle.getWidth(), rectangle.getHeight(), body));
                 }
             }

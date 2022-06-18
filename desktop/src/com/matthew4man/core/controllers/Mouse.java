@@ -7,6 +7,7 @@ public class Mouse {
     private boolean isLeftClicked;
     private boolean isRightClicked;
     private boolean wasLeftClicked;
+    private boolean leftMouseReleased;
 
     public int getX() {
         return x;
@@ -46,5 +47,13 @@ public class Mouse {
 
     public void setWasLeftClicked(boolean wasLeftClicked) {
         this.wasLeftClicked = wasLeftClicked;
+    }
+
+    public boolean isLeftMouseReleased() {
+        return leftMouseReleased;
+    }
+
+    public void setLeftMouseReleased(boolean leftMouseReleased) {
+        this.leftMouseReleased = leftMouseReleased;
     }
 }
